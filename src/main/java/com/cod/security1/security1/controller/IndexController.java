@@ -1,11 +1,16 @@
 package com.cod.security1.security1.controller;
 
+import com.cod.security1.security1.config.auth.PrincipalDetails;
 import com.cod.security1.security1.model.User;
 import com.cod.security1.security1.repositoty.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +25,28 @@ public class IndexController {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @GetMapping("/test/login")
+    @ResponseBody                  // PrincipalDetails가 UserDetails를 상속받았기 때문에 @AuthenticationPrincipal PrincipalDetails 로 쓸 수 있다.
+    public String loginTest(Authentication authentication, @AuthenticationPrincipal UserDetails userDetails){  //DI 의존성주입
+        PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
+        System.out.println("authenticaton: " + principalDetails.getUser());
+
+        System.out.println("userDetails : " + userDetails.getUsername());  //데이터타입을 PrincipalDetails로 하면 Username이 아닌 User를 받을 수 있다.
+        return "세션 정보 확인하기";
+    }
+
+    @GetMapping("/test/oauth/login")
+    @ResponseBody
+    public String oauthloginTest(Authentication authentication, @AuthenticationPrincipal OAuth2User oauth){  // oauth로그인은 PrincipalDerails 캐스팅 불가
+        OAuth2User oauth2User = (OAuth2User)authentication.getPrincipal();
+        System.out.println("authenticaton: " + oauth2User.getAttributes());
+        System.out.println("oauth2User: "+ oauth.getAttributes());
+
+        return "세션 정보 확인하기";
+    }
+
+
 
 
     @GetMapping({"","/"})
