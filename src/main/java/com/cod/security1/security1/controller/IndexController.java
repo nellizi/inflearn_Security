@@ -3,6 +3,8 @@ package com.cod.security1.security1.controller;
 import com.cod.security1.security1.model.User;
 import com.cod.security1.security1.repositoty.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,4 +63,17 @@ public class IndexController {
         return "redirect:/loginForm";
     }
 
+    @ResponseBody
+    @Secured("ROLE_ADMIN")  // 얘만 접근 가능  , 하나에만 적용할 때 사용, 그 외에는 글로벌로 처리?
+    @GetMapping("/info")
+    public String info(){
+        return "개인정보";
+    }
+
+    @ResponseBody
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')") // 메서드 실행 전 확인, 요즘 잘 안 씀.
+    @GetMapping("/data")
+    public String data(){
+        return "데이터정보";
+    }
 }
