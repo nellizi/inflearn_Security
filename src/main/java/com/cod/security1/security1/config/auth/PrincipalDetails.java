@@ -23,17 +23,23 @@ import java.util.Collection;
 import java.util.Map;
 
 @Data
-public class PrincipalDetails implements UserDetails, OAuth2User {
-
+public class PrincipalDetails implements UserDetails, OAuth2User { //UserDetails과 OAuth2User 를 하나로 묶어주기 위해 ,
+                                                                  // >> 로그인한 User정보를 받아올 때 일반로그인하고 OAuth2로그인 객체가 다르면 너무 불편편
     private User user; //콤포지션?
+    private Map<String,Object> Attributes;
 
     public PrincipalDetails(User user){
         this.user = user;
+    } //일반로그인 생성자
+    public PrincipalDetails(User user,Map<String,Object> Attributes ){ //oauth로그인 생성자
+
+        this.user = user;
+        this.Attributes = Attributes;
     }
 
     @Override
     public Map<String, Object> getAttributes() {
-        return null;
+        return Attributes;
     }
 
     //해당 user의 권한 리턴
