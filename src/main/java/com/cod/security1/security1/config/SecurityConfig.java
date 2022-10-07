@@ -24,7 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()  // 이제 서버 실행 후 로그인을 안 해도 페이지 들어가짐
                 .and()
                 .formLogin()
-                .loginPage("/loginForm");
+                .loginPage("/loginForm")
+                .loginProcessingUrl("/login") // 로그인 페이지가 호출되면 시큐리티가 로그인 처리해준다. 컨트롤러에서 /login로직 짤 필요가 없다.
+                .defaultSuccessUrl("/");
     }
 
 
