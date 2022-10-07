@@ -1,4 +1,4 @@
-package com.cod.security1.security1.auth;
+package com.cod.security1.security1.config.auth;
 
 import com.cod.security1.security1.model.User;
 import com.cod.security1.security1.repositoty.UserRepository;

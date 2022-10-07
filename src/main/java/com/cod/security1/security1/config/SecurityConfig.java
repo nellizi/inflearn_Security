@@ -1,5 +1,7 @@
 package com.cod.security1.security1.config;
 
+import com.cod.security1.security1.config.oauth.PrincipalOauth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -8,11 +10,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+/*
+* 1. 코드받기(인증), 2.엑세스토큰(권한),
+* 3. 사용자프로필 정보 가져오기
+* 4-1. 그 정보를 토대로 회원가입을 자동 진행
+* 4-2. 추가 정보가 필요하기도 함
+* */
+
 @Configuration //빈 등록
 @EnableWebSecurity  //스프링 시큐리티 필터가 스프링 필터체인에 등록이 된다.
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
 //secure 어노테이션 활성화, 어노테이션 없으면 다 들어갈 수 있는데 있으면 걔만 접근 가능, preAuthorize 어노테이션 활성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private PrincipalOauth2UserService principalOauth2UserService;
     @Bean   // 해당 메서드의 리턴 오브젝트값을 Ioc에 등록해준다.
     public BCryptPasswordEncoder encodePwd() {
         return new BCryptPasswordEncoder();
@@ -32,7 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/")
                 .and()
                 .oauth2Login()
-                .loginPage("/loginForm"); //구글로그인이 완료된 뒤 후처리가 필요
+                .loginPage("/loginForm")
+                .userInfoEndpoint()
+                .userService(principalOauth2UserService); //구글로그인이 완료된 뒤 후처리가 필요. Tip.코드 만들지 않음. (엑세스토큰 + 사용자프로필정보 를 바로 받는다.)
     }
 
 
