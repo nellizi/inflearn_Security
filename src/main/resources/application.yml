@@ -42,5 +42,13 @@ spring:
             scope:
               - email
               - public_profile   #페이스북에서 그렇게 한거
-
+          naver:
+            client-id:
+            client-secret:
+            scope:
+              -email
+              -profile
+            client-name: Naver
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/naver    #스프링에 provider로 등록되어 있으면 따로 적어줄 필요가 없다.
 
