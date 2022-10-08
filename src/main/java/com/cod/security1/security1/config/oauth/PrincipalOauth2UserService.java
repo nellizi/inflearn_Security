@@ -3,9 +3,11 @@ package com.cod.security1.security1.config.oauth;
 import com.cod.security1.security1.config.auth.PrincipalDetails;
 import com.cod.security1.security1.config.oauth.provider.FacebookUserInfo;
 import com.cod.security1.security1.config.oauth.provider.GoogleUserInfo;
+import com.cod.security1.security1.config.oauth.provider.NaverUserInfo;
 import com.cod.security1.security1.config.oauth.provider.OAuth2UserInfo;
 import com.cod.security1.security1.model.User;
 import com.cod.security1.security1.repositoty.UserRepository;
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -13,6 +15,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
@@ -45,8 +49,11 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         }else if(userRequest.getClientRegistration().getRegistrationId().equals("facebook")) {
             System.out.println("페북 로그인 요청");
             oAuth2UserInfo = new FacebookUserInfo(oauth2User.getAttributes());
+        }else if(userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+            System.out.println("네이버 로그인 요청");   //네이버는 response{name = "이지현", email = "wlgus9095@naver.com"}이런식으로 전달
+            oAuth2UserInfo = new NaverUserInfo((Map)oauth2User.getAttributes().get("response"));
         }else{
-            System.out.println("구글 또는 페북만 지원합니다. ");
+            System.out.println("구글 또는 페북 또는 네이버만 지원합니다. ");
         }
 
 
