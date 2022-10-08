@@ -43,8 +43,8 @@ spring:
               - email
               - public_profile   #페이스북에서 그렇게 한거
           naver:
-            client-id:
-            client-secret:
+            client-id: si_QQxIIg7SbSlND2eG7
+            client-secret: 8MQqA3C4F0
             scope:
               -email
               -profile
