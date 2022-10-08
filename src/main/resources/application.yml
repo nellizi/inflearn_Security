@@ -21,7 +21,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update #create update none
+      ddl-auto: create #create update none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
@@ -36,6 +36,11 @@ spring:
             scope:
               - email
               - profile
-
+          facebook:
+            client-id: 500569335262873
+            client-secret: 0b97dc3e5f3682a2445e1aabf986823c
+            scope:
+              - email
+              - public_profile   #페이스북에서 그렇게 한거
 
 

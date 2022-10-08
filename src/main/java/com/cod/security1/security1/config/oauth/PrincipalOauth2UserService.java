@@ -1,6 +1,9 @@
 package com.cod.security1.security1.config.oauth;
 
 import com.cod.security1.security1.config.auth.PrincipalDetails;
+import com.cod.security1.security1.config.oauth.provider.FacebookUserInfo;
+import com.cod.security1.security1.config.oauth.provider.GoogleUserInfo;
+import com.cod.security1.security1.config.oauth.provider.OAuth2UserInfo;
 import com.cod.security1.security1.model.User;
 import com.cod.security1.security1.repositoty.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +36,30 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         //userRequest정보를 통해서 회원 프로필을 받아야 하는데 그 때 사용되는 함수가 loadUser  = 구글로부터 회원 프로필 받기 완료
         System.out.println("getAttribute:"+ oauth2User.getAttributes());
 
-        String provider = userRequest.getClientRegistration().getClientId(); //google
-        String prociderId = oauth2User.getAttribute("sub");
-        String username = provider + "_" + prociderId;
+        // 강제 회원가입 진행
+        OAuth2UserInfo oAuth2UserInfo = null;
+
+        if(userRequest.getClientRegistration().getRegistrationId().equals("google")){
+            System.out.println("구글 로그인 요청");
+            oAuth2UserInfo = new GoogleUserInfo(oauth2User.getAttributes());
+        }else if(userRequest.getClientRegistration().getRegistrationId().equals("facebook")) {
+            System.out.println("페북 로그인 요청");
+            oAuth2UserInfo = new FacebookUserInfo(oauth2User.getAttributes());
+        }else{
+            System.out.println("구글 또는 페북만 지원합니다. ");
+        }
+
+
+
+        String provider = oAuth2UserInfo.getProvider();   //페북이던 구글이던 통일 가능. OAuth2UserInfo로 두 가지 다 묶을 수 있기 떄문에
+        String providerId = oAuth2UserInfo.getPrviderId();
+        String username = provider + "_" + providerId;
         String password = bCryptPasswordEncoder.encode("겟인데어");
-        String email = oauth2User.getAttribute("email");
+        String email = oAuth2UserInfo.getEmail();
         String role = "ROLE_USER";
 
         User userEntity = userRepository.findByUsername(username);
+
         if(userEntity == null){
             userEntity = User.builder()
                     .username(username)
@@ -48,7 +67,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .email(email)
                     .role(role)
                     .provider(provider)
-                    .providerId(prociderId)
+                    .providerId(providerId)
                     .build();
             userRepository.save(userEntity);
 
