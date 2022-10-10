@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.SQLOutput;
@@ -80,16 +81,34 @@ public class IndexController {
         return "joinForm";
     }
 
+//    @PostMapping("/join")
+//    public String join(User user) {
+//        System.out.println("회원가입 진행 : " + user);
+//        String rawPassword = user.getPassword();
+//        String encPassword = bCryptPasswordEncoder.encode(rawPassword); //원문으로 저장하면 시큐리티 로그인이 안 됨
+//        user.setPassword(encPassword);
+//        user.setRole("ROLE_USER");
+//        userRepository.save(user);
+//        return "redirect:/loginForm";
+//    }
+
+
     @PostMapping("/join")
-    public String join(User user) {
-        System.out.println("회원가입 진행 : " + user);
+    public String join(@RequestBody User user) {
         String rawPassword = user.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword); //원문으로 저장하면 시큐리티 로그인이 안 됨
         user.setPassword(encPassword);
         user.setRole("ROLE_USER");
         userRepository.save(user);
-        return "redirect:/loginForm";
+        return "회원가입 완료";
     }
+
+
+
+
+
+
+
 
     @ResponseBody
     @Secured("ROLE_ADMIN")  // 얘만 접근 가능  , 하나에만 적용할 때 사용, 그 외에는 글로벌로 처리?
